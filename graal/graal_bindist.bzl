@@ -11,7 +11,7 @@ _graal_version_configs = {
     "1.0.0-rc16": {
         "sha": {
             "macos-amd64": "e464bb24daafc5994412d115a7aa292d3fc3f9826f627832aa18197814bb4fb0",
-            "linux-amd64": "e464bb24daafc5994412d115a7aa292d3fc3f9826f627832aa18197814bb4fb0",
+            "linux-amd64": "2333a2a9a9e2352d4b92acda92f3ff747aa6e1987140300af7c875d82648e904",
         },
     },
 }
