@@ -26,4 +26,4 @@ before_install:
 
 before_script:
   - nix-env -iA nixpkgs.shellcheck
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install --reinstall build-essential; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then nix-env -iA nixpkgs.gcc; fi
