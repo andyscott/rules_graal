@@ -13,6 +13,15 @@ _osx: &osx
   os: osx
   osx_image: xcode7.3
 
+addons:
+  apt:
+    packages:
+      - clang-3.8
+      - llvm-3.8
+      - clang-format-3.8
+      - libc++1
+      - libc++-dev
+
 jobs:
   include:
     - stage: build
@@ -26,4 +35,3 @@ before_install:
 
 before_script:
   - nix-env -iA nixpkgs.shellcheck
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then nix-env -iA nixpkgs.gcc; fi
