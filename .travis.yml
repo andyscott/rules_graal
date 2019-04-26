@@ -1,0 +1,16 @@
+language: nix
+jdk:
+  - oraclejdk8
+
+stages:
+  - name: test
+
+jobs:
+  include:
+    - script: ./tools/bazel run //tasks:ci
+
+before_install:
+  - git fetch --tags
+
+before_script:
+  - nix-env -iA nixpkgs.shellcheck
