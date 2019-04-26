@@ -13,15 +13,6 @@ _osx: &osx
   os: osx
   osx_image: xcode7.3
 
-addons:
-  apt:
-    packages:
-      - clang-3.8
-      - llvm-3.8
-      - clang-format-3.8
-      - libc++1
-      - libc++-dev
-
 jobs:
   include:
     - stage: build
