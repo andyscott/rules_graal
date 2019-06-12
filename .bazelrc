@@ -1,7 +1,5 @@
 common --announce_rc
 common --color=auto
-common --all_incompatible_changes
-common --incompatible_disallow_struct_provider_syntax=false
 
 build --experimental_strict_action_env
 build --worker_max_instances=4
