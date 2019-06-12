@@ -11,7 +11,7 @@ _graal_version_configs = {
     "19.0.0": {
         "sha": {
             "darwin-amd64": "fc652566e61b9b774c120da1aea0ae3e28f198d55a297524dcc97b9a83525a79",
-            "linux-amd64": "2333a2a9a9e2352d4b92acda92f3ff747aa6e1987140300af7c875d82648e904",
+            "linux-amd64": "7ad124cdb19cbaa962f6d2f26d1e3eccfeb93afabbf8e81cb65976519f15730c",
         },
     },
 }
