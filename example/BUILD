@@ -11,3 +11,13 @@ graal_binary(
     deps = [":main"],
     main_class = "Main",
 )
+
+
+graal_binary(
+    name = "main-native-reflectioncfg",
+    deps = [":main"],
+    reflection_configuration = "reflection.cfg",
+    main_class = "Main",
+)
+
+
