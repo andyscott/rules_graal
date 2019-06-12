@@ -14,6 +14,8 @@ def _graal_binary_implementation(ctx):
     args.add("-cp", ":".join([f.path for f in classpath_depset.to_list()]))
     args.add("-H:Class=%s" % ctx.attr.main_class)
     args.add("-H:Name=%s" % ctx.outputs.bin.path)
+    if ctx.attr.reflection_configuration != None:
+        args.add("-H:ReflectionConfigurationFiles={path}".format(path=ctx.attr.reflection_configuration.path))
 
     ctx.actions.run(
         inputs = classpath_depset,
@@ -38,6 +40,7 @@ graal_binary = rule(
         "deps": attr.label_list(
             allow_files = True,
         ),
+        "reflection_configuration": attr.label(allow_files=True, mandatory=False),
         "main_class": attr.string(),
         "_graal": attr.label(
             cfg = "host",
