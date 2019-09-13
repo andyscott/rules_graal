@@ -14,6 +14,7 @@ def _graal_binary_implementation(ctx):
     args.add("-cp", ":".join([f.path for f in classpath_depset.to_list()]))
     args.add("-H:Class=%s" % ctx.attr.main_class)
     args.add("-H:Name=%s" % ctx.outputs.bin.path)
+    args.add_all(ctx.attr.args)
 
     if len(ctx.attr.native_image_features) > 0:
         args.add("-H:Features={entries}".format(entries=",".join(ctx.attr.native_image_features)))
@@ -64,4 +65,3 @@ graal_binary = rule(
     },
     executable = True,
 )
-
