@@ -75,9 +75,8 @@ def _graal_binary_implementation(ctx):
     args.add("-H:Name=%s" % binary.path)
     args.add("-H:CCompilerPath=%s" % c_compiler_path)
     args.add("-H:+ReportExceptionStackTraces")
-    args.add("--enable-http")
-    args.add("--enable-https")
-
+    for arg in ctx.attr.graal_extra_args:
+        args.add(arg)
 
     if len(ctx.attr.native_image_features) > 0:
         args.add("-H:Features={entries}".format(entries=",".join(ctx.attr.native_image_features)))
@@ -110,8 +109,7 @@ def _graal_binary_implementation(ctx):
             collect_default = True,
             files = [],
         ),
-    )
-    ]
+    )]
 
 graal_binary = rule(
     implementation = _graal_binary_implementation,
@@ -134,6 +132,7 @@ graal_binary = rule(
             default = Label("@bazel_tools//tools/cpp:current_cc_toolchain")
         ),
         "data": attr.label_list(allow_files = True),
+	"graal_extra_args": attr.string_list()
     },
     executable = True,
     fragments = ["cpp"],
