@@ -67,12 +67,12 @@ def _graal_binary_implementation(ctx):
     binary = ctx.actions.declare_file("%s-bin" % ctx.attr.name)
 
     args = ctx.actions.args()
-    args.add(graal.path)
     args.add("--no-server")
     args.add("--no-fallback")
     args.add("-cp", ":".join([f.path for f in classpath_depset.to_list()]))
     args.add("-H:Class=%s" % ctx.attr.main_class)
     args.add("-H:Name=%s" % binary.path)
+    args.add("-H:CCompilerPath=%s" % c_compiler_path)
     args.add("-H:+ReportExceptionStackTraces")
     for arg in ctx.attr.graal_extra_args:
         args.add(arg)
@@ -94,26 +94,12 @@ def _graal_binary_implementation(ctx):
         classpath_depset = depset([ctx.file.jni_configuration], transitive=[classpath_depset])
         args.add("-H:+JNI")
 
-    c_compile_variables = cc_common.create_compile_variables(
-        feature_configuration = feature_configuration,
-        cc_toolchain = cc_toolchain,
-    )
-
-    env.update(cc_common.get_environment_variables(
-        feature_configuration = feature_configuration,
-        action_name = C_COMPILE_ACTION_NAME,
-        variables = c_compile_variables,
-    ))
-
     ctx.actions.run(
         inputs = classpath_depset,
         outputs = [binary],
-        arguments = [c_compiler_path, args],
-        executable = ctx.executable._compile_script,
-        tools = [graal, ctx.attr._cc_toolchain.files_to_run],
+        arguments = [args],
+        executable = graal,
         env = env,
-        mnemonic = "NativeCompile",
-        progress_message = "GraalVM native-image compiling",
     )
 
     return [DefaultInfo(
@@ -139,12 +125,6 @@ graal_binary = rule(
             cfg = "host",
             default = "@graal//:bin/native-image",
             allow_files = True,
-            executable = True,
-        ),
-        "_compile_script": attr.label(
-            cfg = "host",
-            default = "compile.sh",
-            allow_single_file = True,
             executable = True,
         ),
         "_cc_toolchain": attr.label(
