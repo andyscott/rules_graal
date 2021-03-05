@@ -78,7 +78,7 @@ def _graal_binary_implementation(ctx):
         args.add(arg)
 
     if len(ctx.attr.c_compiler_option) > 0:
-        args.add("-H:CCompilerOption={opts}".format(opts=" ".join(ctx.attr.c_compiler_option)))
+        args.add('-H:CCompilerOption="{opts}"'.format(opts=" ".join(ctx.attr.c_compiler_option)))
     if len(ctx.attr.native_image_features) > 0:
         args.add("-H:Features={entries}".format(entries=",".join(ctx.attr.native_image_features)))
 
