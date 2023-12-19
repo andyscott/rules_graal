@@ -258,9 +258,9 @@ def _get_hash_mac_libc(ctx):
 
 def _get_hash_libc(ctx):
     if ctx.os.name == "linux":
-        _get_hash_linux_libc(ctx)
+        return _get_hash_linux_libc(ctx)
     elif ctx.os.name == "mac os x":
-        _get_hash_mac_libc(ctx)
+        return _get_hash_mac_libc(ctx)
     else:
         fail("Unsupported operating system: " + ctx.os.name)
 
