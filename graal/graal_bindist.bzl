@@ -239,7 +239,7 @@ def _get_hash_linux_libc(ctx):
         line = matched[0]
         start = line.index(' => ') + 4
         path_start = line[start:]
-        path = path_start.index(' ')
+        path = path_start[:path_start.index(' ')]
         return _good_execute(ctx, ["shasum", path])
     else:
         fail("did not match one libc.so.6 line: %s" % matched)
