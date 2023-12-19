@@ -220,6 +220,50 @@ def _get_platform(ctx):
     else:
         fail("Unsupported operating system: " + ctx.os.name)
 
+def _good_execute(ctx, cmd):
+    res = ctx.execute(cmd)
+    if res.return_code != 0:
+        fail("{cmd} returned {code} with stdout:\n{stdout}\n\nstderr:\n\n{stderr}".format(
+            cmd = cmd,
+            code = res.return_code,
+            stdout = res.stdout,
+            stderr = res.stderr
+        ))
+    return res.stdout
+
+def _get_hash_linux_libc(ctx):
+    res = _good_execute(ctx, ["ldd", "/bin/ls"])
+    lines = res.splitlines()
+    matched = [line for line in lines if "libc.so.6" in line]
+    if len(matched) == 1:
+        line = matched[0]
+        start = line.index(' => ') + 4
+        path_start = line[start:]
+        path = path_start.index(' ')
+        return _good_execute(ctx, ["shasum", path])
+    else:
+        fail("did not match one libc.so.6 line: %s" % matched)
+
+def _get_hash_mac_libc(ctx):
+    res = _good_execute(ctx, ["otool", "-L", "/bin/ls"])
+    lines = res.splitlines()
+    matched = [line for line in lines if "libSystem.B.dylib" in line]
+    if len(matched) == 1:
+        # macos includes a line like:
+        # /usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1336.61.1)
+        # which we presume to include enough compatibility information that we can simply use it.
+        return matched[0]
+    else:
+        fail("did not match one libSystem line: %s" % matched)
+
+def _get_hash_libc(ctx):
+    if ctx.os.name == "linux":
+        _get_hash_linux_libc(ctx)
+    elif ctx.os.name == "mac os x":
+        _get_hash_mac_libc(ctx)
+    else:
+        fail("Unsupported operating system: " + ctx.os.name)
+
 def _graal_bindist_repository_impl(ctx):
     platform = _get_platform(ctx)
     version = ctx.attr.version
@@ -257,6 +301,7 @@ def _graal_bindist_repository_impl(ctx):
     if exec_result.return_code != 0:
         fail("Unable to install native image:\n{stdout}\n{stderr}".format(stdout = exec_result.stdout, stderr = exec_result.stderr))
 
+    ctx.file("rules_graal_libc_hash.txt", str(_get_hash_libc(ctx)))
     ctx.file("BUILD", """exports_files(glob(["**/*"]))""")
     ctx.file("WORKSPACE", "workspace(name = \"{name}\")".format(name = ctx.name))
 
