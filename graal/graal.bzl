@@ -98,6 +98,7 @@ def _graal_binary_implementation(ctx):
 
     # add the hash to the resources to bust the cache if glibc changes
     args.add("-H:IncludeResources={path}".format(path=ctx.file._graal_libc_hash.path))
+    classpath_depset = depset([ctx.file._graal_libc_hash], transitive=[classpath_depset])
 
     if ctx.attr.jni_configuration != None:
         args.add("-H:JNIConfigurationFiles={path}".format(path=ctx.file.jni_configuration.path))
