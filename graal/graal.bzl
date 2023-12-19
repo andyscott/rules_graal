@@ -96,6 +96,10 @@ def _graal_binary_implementation(ctx):
     if ctx.attr.include_resources != None:
         args.add("-H:IncludeResources={path}".format(path=ctx.attr.include_resources))
 
+    # add the hash to the resources to bust the cache if glibc changes
+    args.add("-H:IncludeResources={path}".format(path=ctx.file._graal_libc_hash.path))
+    classpath_depset = depset([ctx.file._graal_libc_hash], transitive=[classpath_depset])
+
     if ctx.attr.jni_configuration != None:
         args.add("-H:JNIConfigurationFiles={path}".format(path=ctx.file.jni_configuration.path))
         classpath_depset = depset([ctx.file.jni_configuration], transitive=[classpath_depset])
@@ -135,6 +139,12 @@ graal_binary = rule(
             default = "@graal//:bin/native-image",
             allow_files = True,
             executable = True,
+        ),
+        "_graal_libc_hash": attr.label(
+            cfg = "host",
+            default = "@graal//:rules_graal_libc_hash.txt",
+            allow_single_file = True,
+            executable = False,
         ),
         "_cc_toolchain": attr.label(
             default = Label("@bazel_tools//tools/cpp:current_cc_toolchain")

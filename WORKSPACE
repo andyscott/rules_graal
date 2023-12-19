@@ -7,16 +7,16 @@ load("@rules_graal//graal:graal_bindist.bzl", "graal_bindist_repository")
 
 graal_bindist_repository(
     name = "graal",
-    version = "19.3.1",
-    java_version = "8",
+    java_version = "11",
+    version = "22.1.0",
 )
 
-git_repository(
-    name = "rules_adroit",
-    commit = "e98240c73746934b8cfcf05020f5e936aee5bd9f",
-    remote = "git://github.com/andyscott/rules_adroit",
-)
+#git_repository(
+#    name = "rules_adroit",
+#    commit = "e98240c73746934b8cfcf05020f5e936aee5bd9f",
+#    remote = "git://github.com/andyscott/rules_adroit",
+#)
 
-register_toolchains(
-    "@rules_adroit//toolchains:shellcheck_from_host_path",
-)
+#register_toolchains(
+#    "@rules_adroit//toolchains:shellcheck_from_host_path",
+#)
